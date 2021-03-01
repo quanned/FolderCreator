@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Diagnostics;
 
 namespace FolderCreator
 {
@@ -11,32 +13,50 @@ namespace FolderCreator
     {
         static void Main(string[] args)
         {
+            Console.ForegroundColor = ConsoleColor.Green;//lol
             string defaultFolderName = "NewFolder";
+            Console.Write("Set folder name: ");
             string folderName = Console.ReadLine();
             if (folderName == "" || folderName == null)
-                folderName = defaultFolderName;
-            
+               folderName = defaultFolderName;
+           
             string curDate = GetFormatDate();
-            string path = GetFullPath();
+            string path = GetCurrentPath();
 
-            CreateDirectory(path, folderName, curDate);
+            string fullPath = CreateFullPath(path, folderName, curDate);
+
+            CreateDirectory(fullPath);
+
+            OpenFolder(fullPath);
+
+            Console.ReadKey();
         }
 
-        private static string GetFormatDate()
+        public static string GetFormatDate()
         {
-            DateTime date = DateTime.Now;
-            return date.ToString("MM-dd-yyyy-hh-mm-ss");
+            return DateTime.Now.ToString("MM-dd-yyyy-hh-mm-ss");
         }
 
-        private static string GetFullPath()
+        public static string GetCurrentPath()
         {
-            string path = Environment.CurrentDirectory;
-            return path;
+            return Environment.CurrentDirectory;
         }
 
-        private static void CreateDirectory(string _path, string _folderName, string _date)
+        static string CreateFullPath(string _path, string _folderName, string _date)
         {
-            Directory.CreateDirectory(_path + @"\" + _folderName + "-" + _date);
+            string fullPath = _path + @"\" + _folderName + "-" + _date;
+            return fullPath;
+        }
+
+        public static void CreateDirectory(string _fullPath)
+        {
+            Directory.CreateDirectory(_fullPath);
+            Console.Write("Folder created. \nPath = " + _fullPath);
+        }
+
+        public static void OpenFolder(string _path)
+        {
+            Process.Start(@_path);
         }
     }
 }
